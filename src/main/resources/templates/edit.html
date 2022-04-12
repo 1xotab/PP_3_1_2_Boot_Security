@@ -3,10 +3,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>New User</title>
+    <title>User edit</title>
 </head>
 <body>
-<form th:method="POST" th:action="@{/create}" th:object="${user}">
+<form th:method="POST" th:action="@{/update/{id}(id=${user.id})}" th:object="${user}">
 
     <label for="name">Enter name:</label>
     <input type="text" th:field="*{name}" id="name">
@@ -34,10 +34,8 @@
         <option th:value="ADMIN" th:checked="user.roles" th:text="ADMIN"></option>
         <option th:value="USER" th:checked="user.roles" th:text="USER"></option>
     </select>
-    <br>
 
     <input type="submit" value="Save"/>
-
 </form>
 </body>
 </html>

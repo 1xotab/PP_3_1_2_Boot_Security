@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.boot_security.demo.Service.AdminService;
 
 
 @Configuration
@@ -19,13 +19,13 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final SuccessUserHandler successUserHandler;
-    private final UserService userService;
+    private final AdminService adminService;
     private final PasswordEncoder encoder;
 
     @Autowired
-    public WebSecurityConfig(SuccessUserHandler successUserHandler, UserService userService, PasswordEncoder encoder) {
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, AdminService adminService, PasswordEncoder encoder) {
         this.successUserHandler = successUserHandler;
-        this.userService = userService;
+        this.adminService = adminService;
         this.encoder = encoder;
     }
 
@@ -56,7 +56,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return userService::loadUserByUsername;
+        return adminService::loadUserByLogin;
     }
-
 }

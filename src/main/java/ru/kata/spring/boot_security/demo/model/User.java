@@ -1,118 +1,124 @@
 package ru.kata.spring.boot_security.demo.model;
 
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.util.*;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "first_name")
     private String name;
-
-    @Column(name = "last_name")
-    private String lastName;
-
-    @Column(name = "age")
-    private Integer age;
-
-    @Column(name = "email")
-    @Email
-    private String email;
-
-    @Column(name = "password")
+    private String surname;
+    private String username;
     private String password;
-
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = @JoinColumn(name = "users_id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User() {}
-
-    public User(String password, Long id, String firstName, String lastName, Integer age, String email, Set<Role> roles ) {
-        this.name = firstName;
-        this.lastName = lastName;
-        this.email = email;
+    public User(Long id, String name, String surname, String username, String password, Set<Role> roles) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.username = username;
         this.password = password;
-        this.id = id;
         this.roles = roles;
-        this.age = age;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String firstName) {
-        this.name = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = new BCryptPasswordEncoder(8).encode(password);
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
     }
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
-    public Integer getAge() {
-        return age;
+    public User() {
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String lastName) {
+        this.surname = lastName;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public String getRolesToString() {
+        StringBuilder sb = new StringBuilder();
+        for (Role role : roles) {
+            sb.append(role.toString());
+            sb.append(" ");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastName='" + surname + '\'' +
+                '}';
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles();
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -133,32 +139,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
-    }
-
-    public String getRolesToString() {
-        StringBuilder sb = new StringBuilder();
-        for (Role role : roles) {
-            sb.append(role.toString());
-            sb.append(" ");
-        }
-        return sb.toString();
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", firstName='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", age=" + age +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", roles=" + roles +
-                '}';
     }
 }
