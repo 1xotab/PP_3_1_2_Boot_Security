@@ -3,8 +3,8 @@ package ru.kata.spring.boot_security.demo.util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-import ru.kata.spring.boot_security.demo.Service.AdminService;
-import ru.kata.spring.boot_security.demo.Service.RoleService;
+import ru.kata.spring.boot_security.demo.service.AdminService;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
@@ -34,7 +34,7 @@ public class InitializationUserDB {
         roleService.saveRole(role2);
 
         Set<Role> set = new HashSet<>();
-        //set.add(role1);
+        set.add(role1);
         set.add(role2);
 
         User user1 = new User(1L, "Name", "Surname", "xotab", new BCryptPasswordEncoder(8).encode("1234"), set);
